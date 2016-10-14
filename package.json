@@ -1,0 +1,12 @@
+{
+  "name": "aws-network-monitor",
+  "version": "1.0.0",
+  "description": "AWS Network Monitoring Tool",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Khalil Stemmler",
+  "license": "ISC"
+}

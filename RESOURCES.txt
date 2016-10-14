@@ -1,0 +1,34 @@
+
+
+
+ ██████╗██╗  ██╗ █████╗ ██████╗ ████████╗███████╗
+██╔════╝██║  ██║██╔══██╗██╔══██╗╚══██╔══╝██╔════╝
+██║     ███████║███████║██████╔╝   ██║   ███████╗
+██║     ██╔══██║██╔══██║██╔══██╗   ██║   ╚════██║
+╚██████╗██║  ██║██║  ██║██║  ██║   ██║   ███████║
+ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚══════╝
+                                                 
+List of D3/Angular Resources - https://www.dashingd3js.com/d3-resources/d3-and-angular
+n3-charts - http://n3-charts.github.io/line-chart/#/home
+Angular-nvd3-directives - http://cmaurer.github.io/angularjs-nvd3-directives/
+Angular-Chartjs - http://jtblin.github.io/angular-chart.js/#reactive
+Angular-nvD3 - http://krispo.github.io/angular-nvd3/#/
+https://github.com/jeka-kiselyov/aws-cloudwatch-chart
+
+
+==========================================================================================
+
+
+
+███╗   ██╗ ██████╗ ██████╗ ███████╗
+████╗  ██║██╔═══██╗██╔══██╗██╔════╝
+██╔██╗ ██║██║   ██║██║  ██║█████╗  
+██║╚██╗██║██║   ██║██║  ██║██╔══╝  
+██║ ╚████║╚██████╔╝██████╔╝███████╗
+╚═╝  ╚═══╝ ╚═════╝ ╚═════╝ ╚══════╝
+
+                                   
+AWS CLOUDWATCH CHARTS - https://github.com/jeka-kiselyov/aws-cloudwatch-chart
+
+AWS Cloudwatch API Actions - http://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_Operations.html
+AWS Cloudwatch API DataTypes - http://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_Types.html
