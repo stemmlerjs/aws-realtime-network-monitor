@@ -1,4 +1,8 @@
 
+/**
+  * watch/index.js
+  */
+
 module.exports = function(config) {
 
   var AWS     = require('aws-sdk');
@@ -34,9 +38,9 @@ module.exports = function(config) {
     orderBy: 'LogStreamName | LastEventTime'
   };
   
-  new AWS.CloudWatchLogs().describeLogStreams(params, function(err, data) {
-    if (err) console.log(err, err.stack); // an error occurred
-    else     console.log(data);           // successful response
-  });
+  var cloudwatch = new AWS.CloudWatch();
+  cloudwatch.listMetrics({}, function(data) {
+    console.log("METRICS", data)
+  })
 
 }

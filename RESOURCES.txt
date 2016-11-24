@@ -40,3 +40,9 @@ http://www.seleniumtests.com/2015/12/real-time-jmeter-result-using-backend.html
 
 You're creating an app that runs on a mobile phone and that makes requests to AWS.
 Don't create an IAM user and distribute the user's access key with the app. Instead, use an identity provider like Login with Amazon, Amazon Cognito, Facebook, or Google to authenticate users and map the users to an IAM role. The app can use the role to get temporary security credentials that have the permissions specified by the policies attached to the role. For more information, see the following:
+
+CloudWatch Limits: https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/cloudwatch_limits_cwl.html
+CloudWatch Actions: http://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_CreateLogGroup.html
+
+
+
