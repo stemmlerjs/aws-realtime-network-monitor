@@ -8,7 +8,7 @@ app.listen(3000)
 
 require('./logs')(app)
 
-require('./watch')(config)
+var CloudWatchClient = require('./watch')(config)
 
 app.use(helmet())
 app.use(express.static(path.join(__dirname + '/app')))
@@ -19,11 +19,6 @@ app.get('/', function(req, res) {
 })
 
 
-
-// Access Key ID:
-// AKIAJQKEUF75O3AI4TVQ
-// Secret Access Key:
-// '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'
 
 
 
