@@ -1,0 +1,74 @@
+
+==== Namespaces ====
+  - a namespace in CloudWatch is a container for CloudWatch metrics
+  - metrics are isolated from each other by namespaces
+    - lets say that you just wanted to get all DiskReadBytes metric from your EC2 Containers and not from some other service.
+    - We can get DiskReadBytes just from the AWS/EC2 namespace and perhaps get this metric again from the AWS/Logs namespace- they're separate.
+
+    List of AWS Namespaces: (http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/aws-namespaces.html)
+
+
+==== Metrics ====
+  - Metrics are a Time-Ordered set of data points published to cloud watch.
+  - Uniquely identified by:
+    - Name
+    - Namespace
+    - 1 or more Dimensions
+  - Each data point has:
+    - a timestamp
+    - optionally, a unit of measure
+
+
+==== Dimensions ====
+
+  - A dimension is a name/value pair that uniquely identifies a metric. 
+  - You can assign up to ten dimensions to a metric.
+  - Every metric has specific characteristics that describe it, and you can think of dimensions as categories for those characteristics. 
+  - Because dimensions are part of the unique identifier for a metric, whenever you add a unique name/value pair to one of your metrics, you are creating a new metric.
+
+  Example: Let's say that we publish 4 metrics each named ServerStats in the DataCenter namespace:
+    Dimensions: Server=Prod, Domain=Frankfurt, Unit: Count, Timestamp: 2016-10-31T12:30:00Z, Value: 105
+    Dimensions: Server=Beta, Domain=Frankfurt, Unit: Count, Timestamp: 2016-10-31T12:31:00Z, Value: 115
+    Dimensions: Server=Prod, Domain=Rio,       Unit: Count, Timestamp: 2016-10-31T12:32:00Z, Value: 95
+    Dimensions: Server=Beta, Domain=Rio,       Unit: Count, Timestamp: 2016-10-31T12:33:00Z, Value: 97
+
+    - We can only retreive statistics for 4 combinations:
+      Server=Prod,Domain=Frankfurt
+      Server=Prod,Domain=Rio
+      Server=Beta,Domain=Frankfurt
+      Server=Beta,Domain=Rio
+
+    - We CANNOT retreive stats for:
+      Server=Prod
+      Server=Beta
+      Domain=Frankfurt
+      Domain=Rio
+
+        - and the reason for this is because these are not the 4 unique Dimensions we created.
+
+  (http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html#dimension-combinations)
+
+==== CloudWatch Logs ====
+  - We can send logs in realtime whenever we want
+  - In a particular Log Group, we can specify a pattern to represent a Metric.
+    - These Metrics that we create from Logs get added to Namespaces.
+
+
+==== AWS CLI ====
+
+We can use the AWS CLI to give us a lot of good information:
+
+  SEE METRICS
+  aws cloudwatch list-metrics --namespace AWS/EC2
+    - see al metrics for AWS EC2 namespace
+
+  LIST METRICS FOR ALL RESOURCES
+  aws cloudwatch list-metrics --namespace AWS/EC2 --metric-name CPUUtilization
+    -- see all CPUUtilization metric results in the AWS/EC2 namespace
+
+
+  PUT METRIC DATA  
+    aws cloudwatch put-metric-data --metric-name RequestLatency --namespace GetStarted --timestamp 2016-11-20T20:30:00Z --value 87 --unit Milliseconds
+    aws cloudwatch put-metric-data --metric-name RequestLatency --namespace GetStarted --timestamp 2016-11-21T20:30:00Z --value 51 --unit Milliseconds
+    aws cloudwatch put-metric-data --metric-name RequestLatency --namespace GetStarted --timestamp 2016-11-22T20:30:00Z --value 125 --unit Milliseconds
+    aws cloudwatch put-metric-data --metric-name RequestLatency --namespace GetStarted --timestamp 2016-11-23T20:30:00Z --value 235 --unit Milliseconds

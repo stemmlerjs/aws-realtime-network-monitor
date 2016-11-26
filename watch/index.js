@@ -17,12 +17,41 @@ module.exports = function(config) {
     .then(populateDataStoreLogGroupsAndStreams)
     .then(function() {
       console.log(CloudWatchDataStore)
+
+      var params = {
+        EndTime: new Date, /* required */
+        Period: 6000000, /* required */
+        StartTime: new Date(2011,10,30), /* required */
+        MetricName: 'CPUUtilization',
+        Namespace: 'AWS/EC2',
+        Statistics: [
+          'Average',
+          'Sum'
+        ],
+        Dimensions: [
+          {
+            Name: 'InstanceId', /* required */
+            Value: "i-0fb837bcaaa38bc3d"
+          }
+          /* more items */
+        ]
+      }
+      console.log("******************************************")
+      var cloudwatch = new AWS.CloudWatch();
+
+      cloudwatch.getMetricStatistics(params, function(err, data) {
+        if(err) {
+          console.log(":(", err)
+        }
+        console.log(data)
+      })
+
     })
-    .catch(handleError)
 
 
   /* 
   * Public Constructor
+
   */    
 
   return {
@@ -45,25 +74,35 @@ module.exports = function(config) {
 
     isReady: function() {
       return isInitialized
+    },
+
+    /*
+    * getLogData
+    * 
+    * This method actually returns the logs! 
+    * @param {String} logGroupName
+    * @param {Array} logStreamNamesArr
+    * @param {Function} callback
+    * @return void
+    */
+
+    getLogData: function(logGroupName, logStreamNamesArr, callback) {
+      if (isInitialized) {
+        cwdLogs.filterLogEvents({
+          logGroupName: logGroupName,
+          logStreamNames: logStreamNamesArr
+        }, callback)
+      } else {
+        callback(new Error('CloudWatchClient not ready.'))
+      }
     }
-    
+
   }
 
   /*
   * ============ Private Methods ==============
   */
 
-  /*
-  * handleError
-  *
-  * "Handles" error by printing it for now
-  * @param {String} err
-  */
-
-  function handleError(err) {
-    console.log(err)
-
-  }
   
   /*
   * initAWSConfig
