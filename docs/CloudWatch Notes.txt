@@ -17,7 +17,7 @@
   - Each data point has:
     - a timestamp
     - optionally, a unit of measure
-
+    
 
 ==== Dimensions ====
 
