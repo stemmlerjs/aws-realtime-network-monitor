@@ -47,22 +47,21 @@ CloudWatch Actions: http://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIRe
 
 
 TODO:
-- create user model for user logging in
-  - we only want pre-approved users to be able to login (No account creation available on the site)
-  - account needs to be created via command line
+- [DONE] create user model for user logging in
+  - [DONE] we only want pre-approved users to be able to login (No account creation available on the site)
+  - [DONE] account needs to be created via command line-chart  
 
-- hand out JWT tokens that expire after 5 mins 
-  - 
+- [DONE] hand out JWT tokens that expire after 5 mins 
 
 - Standard API Calls For the majority of Data calls
-  - /api/authenticate                         | POST | authenticates the user
+  - [DONE] /api/authenticate                         | POST | authenticates the user
 
-  - /api/log/groups                           | GET | returns all log group names
-  - /api/log/streams                          | GET | returns all log stream names
+  - [DONE] /api/log/groups                           | GET | returns all log group names
+  - [DONE] /api/log/streams                          | GET | returns all log stream names
 
-  - /api/ec2                                  | GET | returns all EC2 instances
-  - /api/ec2/:instanceId/metrics              | GET | returns all metric (names, dimensions) for a particular EC2 instance
-  - /api/ec2/metrics/stats                    | GET | returns stats for a particular EC2 metric
+  - [DONE] /api/ec2                                  | GET | returns all EC2 instances
+  - [DONE] /api/ec2/:instanceId/metrics              | GET | returns all metric (names, dimensions) for a particular EC2 instance
+  - /api/ec2/:instanceId/metrics/stats                    | GET | returns stats for a particular EC2 metric
 
 - Socket.io TCP Connection
   - authenticated connection with JWT

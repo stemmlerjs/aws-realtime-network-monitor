@@ -7,7 +7,7 @@ module.exports = function(config) {
 
 
   var AWS     = require('aws-sdk');
-  var cwdLogs = {}                      // CloudWatchLogs API Obj
+  var cwdLogs = null                    // CloudWatchLogs API Obj
   var cwdMetrics = null                 // CloudWatch (Metrics) API Obj
   var cwdEC2 = null                     // EC2 API Obj
   var CloudWatchDataStore = {}          // Data Store. Contains Session Logs and Metrics Data.
@@ -37,21 +37,9 @@ module.exports = function(config) {
 
       getLogData: getLogData,
 
-      getLogGroups: function() {
-        return CloudWatchDataStore.logGroups
-      },
+      getLogGroups: getLogGroups,
 
-      getLogGroupNames: function() {
-        return CloudWatchDataStore.logGroupName
-      },
-
-      getLogStreams: function() {
-        return CloudWatchDataStore.logStreams
-      },
-
-      getLogStreamNames: function() {
-        return CloudWatchDataStore.logStreamNames
-      }
+      getLogStreams: getLogStreams,
 
     },
 
@@ -103,19 +91,14 @@ module.exports = function(config) {
           'Minimum',
           'Maximum'
         ],
-        Dimensions: [dimensions]          //    {  Name: 'InstanceId', Value: "i-0fb837bcaaa38bc3d"  }
+        Dimensions: dimensions          //    {  Name: 'InstanceId', Value: "i-0fb837bcaaa38bc3d"  }
       }
 
       cwdMetrics.getMetricStatistics(params, function(err, data) {
         if(err) {
           reject(err)
         } else {
-          console.log("")
-          console.log("******************************************")
-          console.log("           getMetricStatistics() ")
-          console.log("")
-          console.log(data)
-          resolve()
+          resolve(data)
         }
       })
 
@@ -140,6 +123,11 @@ module.exports = function(config) {
 
   function listEC2Metrics (instanceId) {
     return new Promise(function(resolve, reject) {
+
+      if (cwdMetrics == null) {
+        cwdMetrics = new AWS.CloudWatch();
+      }
+
       var param = {
         Dimensions: [
           {
@@ -161,7 +149,9 @@ module.exports = function(config) {
           console.log("         InstanceID: ", instanceId)
           console.log("")
           console.log("Found " + data.Metrics.length + " metrics. ")
-          resolve(data.Metrics)
+          resolve({
+            metrics: data.Metrics,
+          })
         }     
       });
     })
@@ -198,9 +188,76 @@ module.exports = function(config) {
             console.log("[EC2]: Added Instance " + instance.InstanceId + " to local list. State: " + instance.State.Name)
           }
           console.log("")
-          resolve()
+          resolve({
+            ec2Instances: EC2InstancesList
+          })
         }
       });
+    })
+  }
+
+
+  /*
+  * getLogGroups
+  *
+  * Return all of the log groups and log group names.
+  * @return {Promise}
+  */
+
+  function getLogGroups () {
+    return new Promise(function(resolve, reject) {
+      if(cwdLogs === null) {
+        cwdLogs = new AWS.CloudWatchLogs();
+      }
+
+      cwdLogs.describeLogGroups({}, function(err, data) {
+        CloudWatchDataStore.logGroups = data.logGroups
+        CloudWatchDataStore.logGroupNames = data.logGroups.map(function(el) {
+          return el.logGroupName
+        })
+
+        resolve({
+          logGroups: CloudWatchDataStore.logGroups,
+          logGroupNames: CloudWatchDataStore.logGroupNames
+        })
+      })
+    })
+  }
+
+  /*
+  * getLogStreams
+  *
+  * Return all of the log streams and log stream names
+  * @return {Promise}
+  */
+
+  function getLogStreams () {
+    return new Promise(function(resolve, reject) {
+
+      getLogGroups()
+        .then(function(logGroupData) {
+          CloudWatchDataStore.logGroupNames = logGroupData.logGroupNames
+
+          // Get all log streams
+          for(var i = 0; i < CloudWatchDataStore.logGroupNames.length; i++) {
+
+            var apiConf = {
+              logGroupName: CloudWatchDataStore.logGroupNames[i],
+              descending: true
+            }
+
+            cwdLogs.describeLogStreams(apiConf, function(err, data) {
+              CloudWatchDataStore.logStreams = data.logStreams
+              CloudWatchDataStore.logStreamNames = data.logStreams.map(function(el) {
+                return el.logStreamName
+              })
+              resolve({
+                logStreams: CloudWatchDataStore.logStreams,
+                logStreamNames: CloudWatchDataStore.logStreamNames
+              })
+            })
+          }
+        })
     })
   }
 

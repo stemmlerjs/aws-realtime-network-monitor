@@ -9,7 +9,7 @@
 		var bcrypt = require('bcrypt-nodejs');
 
 		// ==== Get Connection to MySQL Database via Sequelize configuration ====
-		var sequelize = require('../../config').dbConnection;
+		var sequelize = require('../../../config').dbConnection;
 		
 		// ==== Get Model Definition from File ====
 		var user = require('./user.js')(sequelize, Sequelize);

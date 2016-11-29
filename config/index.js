@@ -8,5 +8,6 @@ module.exports = {
     SECRET_ACCESS_KEY: awsConfig.SECRET_ACCESS_KEY
   },
   awsDefaultRegion: awsConfig.REGION,
-  dbConnection: sequelize !== null ? sequelize : 'Could not init database connection.'
+  dbConnection: sequelize !== null ? sequelize : 'Could not init database connection.',
+  secret: process.env.API_SECRET
 }

@@ -2,19 +2,25 @@ var path    = require('path')
 var express = require('express')
 var helmet  = require('helmet')
 var config = require('./config')
-var CloudWatchClient = require('./watch')(config)
-var models = require('./models')
+var cookieParser = require('cookie-parser')
+var bodyParser = require('body-parser')
+var morgan = require('morgan')
 
 // Start HTTP Server (Public API and Web Pages)
 var app = express();
 app.listen(80)
 
 // Log traffic on HTTP Server to a log file
-require('./logs')(app)
+//require('./logs')(app)
+app.use(morgan('dev'));
 
 app.use(helmet())
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(cookieParser()); // read cookies (needed for auth)
 app.use(express.static(path.join(__dirname + '/public')))
 app.use('/bower', express.static(__dirname + '/bower_components'));
+
 
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
@@ -23,7 +29,7 @@ var io = require('socket.io')(server);
 server.listen(3000)
 
 // Init API/Routes
-require('./app')(app, CloudWatchClient, io, config, express, __dirname, models)
+require('./app')(app, io, config, express, __dirname)
 
 
 

@@ -1,28 +1,33 @@
 
   var colors = require('colors')
+  var bcrypt = require('bcrypt-nodejs')
 
   switch(process.argv[2]) {
     case "createuser":
-      var User = require('./models').User 
+      var User = require('./app/models').User 
       var username = process.argv[3]
       var password = process.argv[4]
 
       if (username !== "" && username !== undefined && password !== "" && password !== undefined) {
         console.log("[createuser]: Creating new user ".yellow + "'" +  username +"'")
 
-        User.create({
-          user_username: username,
-          user_password: password
-        }).then(function(result) {
-          console.log("[createuser]: Successfully created user ".green + "'" +  username + "'")
+        // Hash the password
+        bcrypt.hash(password, null, null, function(err, hash) {
+          User.create({
+            user_username: username,
+            user_password: hash
+          }).then(function(result) {
+            console.log("[createuser]: Successfully created user ".green + "'" +  username + "'")
 
-        }).catch(function(err) {
-          if(err.name === "SequelizeUniqueConstraintError") {
-            console.log("[createuser]: Could not create user ".red + "'" +  username +"'. Error '" + err.name + "' occurred.")
-          } else {
-            console.log("[createuser]: An error occurred: ".red + "'" +  err.name +"'.")    
-          }
+          }).catch(function(err) {
+            if(err.name === "SequelizeUniqueConstraintError") {
+              console.log("[createuser]: Could not create user ".red + "'" +  username +"'. Error '" + err.name + "' occurred.")
+            } else {
+              console.log("[createuser]: An error occurred: ".red + "'" +  err.name +"'.")    
+            }
+          })
         })
+
       } else {
         console.log("[createuser]: Username and password cannot be blank ".red)
       }
