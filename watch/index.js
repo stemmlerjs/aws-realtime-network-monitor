@@ -17,13 +17,7 @@ module.exports = function(config) {
   // Intialize Static resources
 
   initAWSConfig()
-    .then(getEC2Instances)
     .then(populateDataStoreLogGroupsAndStreams)
-    .then(function() {
-      //console.log(CloudWatchDataStore)
-        // listEC2Metrics("i-0fb837bcaaa38bc3d")
-
-    })
     .catch(function(err) {
       console.log(err)
     })
@@ -31,50 +25,44 @@ module.exports = function(config) {
 
   /* 
   * Public Constructor
-
   */    
 
   return {
-
-    getLogGroups: function() {
-      return CloudWatchDataStore.logGroups
-    },
-
-    getLogGroupNames: function() {
-      return CloudWatchDataStore.logGroupName
-    },
-
-    getLogStreams: function() {
-      return CloudWatchDataStore.logStreams
-    },
-
-    getLogStreamNames: function() {
-      return CloudWatchDataStore.logStreamNames
-    },
 
     isReady: function() {
       return isInitialized
     },
 
-    /*
-    * getLogData
-    * 
-    * This method actually returns the logs! 
-    * @param {String} logGroupName
-    * @param {Array} logStreamNamesArr - the names of all of the streams that we want to see
-    * @param {Function} callback
-    * @return void
-    */
+    logs: {
 
-    getLogData: function(logGroupName, logStreamNamesArr, callback) {
-      if (isInitialized) {
-        cwdLogs.filterLogEvents({
-          logGroupName: logGroupName,
-          logStreamNames: logStreamNamesArr
-        }, callback)
-      } else {
-        callback(new Error('CloudWatchClient not ready.'))
+      getLogData: getLogData,
+
+      getLogGroups: function() {
+        return CloudWatchDataStore.logGroups
+      },
+
+      getLogGroupNames: function() {
+        return CloudWatchDataStore.logGroupName
+      },
+
+      getLogStreams: function() {
+        return CloudWatchDataStore.logStreams
+      },
+
+      getLogStreamNames: function() {
+        return CloudWatchDataStore.logStreamNames
       }
+
+    },
+
+    metrics: {
+
+      getEC2Instances: getEC2Instances,
+
+      getMetricStats: getMetricStats,
+
+      listEC2Metrics: listEC2Metrics
+
     }
 
   }
@@ -216,11 +204,33 @@ module.exports = function(config) {
     })
   }
 
+
+  /*
+  * getLogData
+  *
+  * Return all rows for a specific log group and (an optionally multiple) logstream.
+  * @param {String} 
+  * @param {Array}
+  * @param {Function}
+  * @return void
+  */
+
+  function getLogData (logGroupName, logStreamNamesArr, callback) {
+    if (isInitialized) {
+      cwdLogs.filterLogEvents({
+        logGroupName: logGroupName,
+        logStreamNames: logStreamNamesArr
+      }, callback)
+    } else {
+      callback(new Error('CloudWatchClient not ready.'))
+    }
+  }
+
   
   /*
-  * initAWSConfig
+  * populateDataStoreLogGroupsAndStreams
   *
-  * Initializes the AWS Config with our credentials and default region.
+  * Get all log groups and streams and put them into the data store.
   * @return {Promise}
   */
 

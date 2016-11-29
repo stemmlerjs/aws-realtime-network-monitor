@@ -14,9 +14,18 @@
   },
   "dependencies": {
     "aws-sdk": "2.6.9",
+    "bcrypt-node": "^0.1.0",
+    "bcrypt-nodejs": "0.0.3",
+    "color": "^0.11.4",
+    "colors": "^1.1.2",
     "express": "4.14.0",
     "helmet": "2.3.0",
+    "jsonwebtoken": "^7.1.9",
     "morgan": "1.7.0",
-    "socket.io": "1.6.0"
+    "sequelize": "^3.27.0",
+    "sequelize-cli": "^2.4.0",
+    "socket.io": "1.6.0",
+    "socketio-jwt": "^4.5.0",
+    "sqlite3": "^3.1.8"
   }
 }
