@@ -15,6 +15,19 @@ module.exports = function(app, express, rootDir, models, CloudWatchClient) {
   var logApiRouter = express.Router()
   var ec2ApiRouter = express.Router()
 
+  //CORS middleware
+  var allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+
+    next();
+  }
+  apiRouter.use(allowCrossDomain)
+  logApiRouter.use(allowCrossDomain)
+  ec2ApiRouter.use(allowCrossDomain)
+  app.use(allowCrossDomain)
+
 
   // *******************************************************************************
   // ******************************* AUTHENTICATE **********************************
@@ -29,13 +42,21 @@ module.exports = function(app, express, rootDir, models, CloudWatchClient) {
   *   @return 
   */
 
+  // Patch CORS
+  apiRouter.options('/authenticate', function(req, res) {
+    res.status(200).json({
+      message: 'good'
+    })
+  })
+
   apiRouter.post('/authenticate', function(req, res) {
     var username = req.body.username
     var password = req.body.password
 
     if (typeof username !== "string" || typeof password !== "string") {
       res.json({
-        message: "Either username or password not submitted."
+        message: "Either username or password not submitted.",
+        req: req.body
       })
     } else {
       User.findOne({
@@ -81,12 +102,43 @@ module.exports = function(app, express, rootDir, models, CloudWatchClient) {
             }
           });
         } else {
-          res.status(404).json({
+          res.json({
             success: false,
             message: 'User not found'
           });
         }
       }) 
+    }
+  })
+
+  apiRouter.options('/verify', function(req, res) {
+    res.status(200).json({
+      message: 'good'
+    })
+  })
+
+  apiRouter.post('/verify', function(req, res) {
+    var token = req.body.token || req.query.token || req.headers['x-access-token'] || req.cookies.netmonitorAccessToken;
+
+    if (token) {
+      jwt.verify(token, config.secret, function(err, decoded) {
+        if (err) {
+          return res.json({
+            success: false,
+            message: 'The token is not valid.'
+          })
+        } else {
+          return res.json({
+            success: true,
+            message: 'The token is OK.'
+          })
+        }
+      })
+    } else {
+      return res.json({
+        success: false,
+        message: 'No token provided.'
+      })
     }
   })
 
@@ -221,6 +273,12 @@ module.exports = function(app, express, rootDir, models, CloudWatchClient) {
   // /api/ec2/metrics/stats - get metrics statistics for a particular instance
   // ========================================================================================== //
 
+  ec2ApiRouter.options('/metric/stats', function(req, res) {
+    res.status(200).json({
+      message: 'good'
+    })
+  })
+  
   ec2ApiRouter.post('/metrics/stats', function(req, res) {
 
     var startDate = req.body.startDate
