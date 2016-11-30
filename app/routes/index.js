@@ -64,7 +64,7 @@ module.exports = function(app, express, rootDir, models, CloudWatchClient) {
                 var token = jwt.sign({
                   user: retUserData
                 }, config.secret, {
-                  expiresIn: 60 * 20 // 60 seconds * 20 = 20 minutes
+                  expiresIn: 60 * 120 // 60 seconds * 120 = 120 minutes (2 hours)
                 });
                         
                 res.status(201).json({
@@ -154,10 +154,27 @@ module.exports = function(app, express, rootDir, models, CloudWatchClient) {
   })
 
   // ========================================================================================== //
-  // /api/log/streams - Return all of the log steams/names
+  // /api/log/streams - Return all of the log streams/names
   // ========================================================================================== //
 
   logApiRouter.get('/streams', function(req, res) {
+    CloudWatchClient.logs.getLogStreams()
+      .then(function(data) {
+        res.status(200).json(data)
+      }).catch(function(err){
+        res.json({
+          err: err
+        })
+      })
+  })
+
+  // ========================================================================================== //
+  // /api/log/streams/:groupName - Return just the log streams for a particular group
+  // ========================================================================================== //
+ 
+  // TODO: Implement this
+
+  logApiRouter.get('/streams/:groupName', function(req, res) {
     CloudWatchClient.logs.getLogStreams()
       .then(function(data) {
         res.status(200).json(data)

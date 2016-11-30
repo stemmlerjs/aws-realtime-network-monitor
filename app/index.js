@@ -7,6 +7,6 @@ module.exports = function(app, io, config, express, rootDir) {
   require('./routes')(app, express, rootDir, models, CloudWatchClient)
 
   // Init Server TCP Socket Module
-  require('./socket')(io)
+  require('./socket')(io, config, CloudWatchClient)
 
 }

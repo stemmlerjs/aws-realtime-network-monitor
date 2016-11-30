@@ -26,8 +26,17 @@
   - Every metric has specific characteristics that describe it, and you can think of dimensions as categories for those characteristics. 
   - Because dimensions are part of the unique identifier for a metric, whenever you add a unique name/value pair to one of your metrics, you are creating a new metric.
 
+  Dimension: [{
+    Name: "Server",
+    Value: "Prod"
+  }, {
+    Name: "Domain",
+    Value: "Frankfurt"
+  }]
+
   Example: Let's say that we publish 4 metrics each named ServerStats in the DataCenter namespace:
     Dimensions: Server=Prod, Domain=Frankfurt, Unit: Count, Timestamp: 2016-10-31T12:30:00Z, Value: 105
+    Dimensions: Server=Prod, Domain=Frankfurt, Unit: Count, Timestamp: 2016-10-31T12:30:00Z, Value: 300
     Dimensions: Server=Beta, Domain=Frankfurt, Unit: Count, Timestamp: 2016-10-31T12:31:00Z, Value: 115
     Dimensions: Server=Prod, Domain=Rio,       Unit: Count, Timestamp: 2016-10-31T12:32:00Z, Value: 95
     Dimensions: Server=Beta, Domain=Rio,       Unit: Count, Timestamp: 2016-10-31T12:33:00Z, Value: 97

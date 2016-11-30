@@ -74,7 +74,23 @@ function getLogStreamParams (socketId) {
   return connectionsTable[socketId]
 }
 
+/*
+* addLogDispatcher
+*
+* @return void
+*/
+
+function addLogDispatcher (socketId, dispatcher, callback) {
+  if(connectionsTable[socketId] === undefined) {
+    callback(new Error("Can't add dispatcher to socket that doesn't exist."))
+  } else {
+    connectionsTable[socketId].dispatcher = dispatcher
+    callback(null, "Success")
+  }
+}
+
 module.exports = {
   add: addConnectionToTable,
-  del: deleteConnectionFromTable
+  del: deleteConnectionFromTable,
+  get: getLogStreamParams
 }
