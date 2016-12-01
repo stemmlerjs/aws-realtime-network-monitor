@@ -41,6 +41,8 @@ module.exports = function(config) {
 
       getLogStreams: getLogStreams,
 
+      getLogStreamsByGroupName: getLogStreamsByGroupName
+
     },
 
     metrics: {
@@ -258,6 +260,34 @@ module.exports = function(config) {
             })
           }
         })
+    })
+  }
+
+  /*
+  * getLogStreamsByGroupName
+  *
+  * Return all of the log streams for a log group
+  * @return {Promise}
+  */
+
+  function getLogStreamsByGroupName (groupName) {
+    return new Promise(function(resolve, reject) {
+
+      var apiConf = {
+        logGroupName: groupName,
+        descending: true
+      }
+
+      cwdLogs.describeLogStreams(apiConf, function(err, data) {
+        if(err) {
+          reject(err)
+        } else {
+          resolve({
+            logStreams: CloudWatchDataStore.logStreams,
+            logStreamNames: CloudWatchDataStore.logStreamNames
+          })
+        }
+      })
     })
   }
 

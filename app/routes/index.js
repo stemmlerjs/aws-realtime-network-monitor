@@ -20,6 +20,7 @@ module.exports = function(app, express, rootDir, models, CloudWatchClient) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
+    res.header('Access-Control-Allow-Headers', 'x-access-token');
 
     next();
   }
@@ -170,7 +171,10 @@ module.exports = function(app, express, rootDir, models, CloudWatchClient) {
         });
       } else {
         //Redirect to login if we cannot access any token witin cookie or header
-        res.redirect('/login');
+        res.json({
+          success: false,
+          error: 'Access token invalid.'
+        })
       }
   }
     
@@ -193,6 +197,12 @@ module.exports = function(app, express, rootDir, models, CloudWatchClient) {
   // ========================================================================================== //
   // /api/log/groups - Return all of the log groups/names
   // ========================================================================================== //
+
+  logApiRouter.options('/groups', function(req, res) {
+    res.status(200).json({
+      message: 'good'
+    })
+  })
 
   logApiRouter.get('/groups', function(req, res) {
     CloudWatchClient.logs.getLogGroups()
@@ -221,20 +231,37 @@ module.exports = function(app, express, rootDir, models, CloudWatchClient) {
   })
 
   // ========================================================================================== //
-  // /api/log/streams/:groupName - Return just the log streams for a particular group
+  // /api/log/streams/ - Return just the log streams for a particular group
+  // - in body: groupName
   // ========================================================================================== //
  
   // TODO: Implement this
 
-  logApiRouter.get('/streams/:groupName', function(req, res) {
-    CloudWatchClient.logs.getLogStreams()
-      .then(function(data) {
-        res.status(200).json(data)
-      }).catch(function(err){
-        res.json({
-          err: err
+  logApiRouter.post('/streams', function(req, res) {
+
+    var groupName = req.body.groupName
+
+    if(groupName) {
+      // Get just the streams for this group name
+      CloudWatchClient.logs.getLogStreamsByGroupName(groupName)
+        .then(function(streams) {
+          res.status(200).json({
+            streams: streams
+          })
         })
+        .catch(function(err) {
+          res.json({
+            message: 'AWS error',
+            err: err,
+            success: false
+          })
+        })
+    } else {
+      res.status(400).json({
+        message: 'No log group provided',
+        success:false
       })
+    }
   })
 
   // ========================================================================================== //
