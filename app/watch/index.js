@@ -182,16 +182,18 @@ module.exports = function(config) {
           console.log("       EC2 - GETTING INSTANCES STATE ")
           console.log("           describeInstances() ")
           console.log("")
+          var instances = []
           for(var i = 0; i < data.Reservations.length; i++) {
 
             var instance = data.Reservations[i].Instances[0]
-            EC2InstancesList.push(instance)
+            //EC2InstancesList.push(instance)
+            instances.push(instance)
 
             console.log("[EC2]: Added Instance " + instance.InstanceId + " to local list. State: " + instance.State.Name)
           }
           console.log("")
           resolve({
-            ec2Instances: EC2InstancesList
+            ec2Instances: instances
           })
         }
       });
@@ -282,10 +284,7 @@ module.exports = function(config) {
         if(err) {
           reject(err)
         } else {
-          resolve({
-            logStreams: CloudWatchDataStore.logStreams,
-            logStreamNames: CloudWatchDataStore.logStreamNames
-          })
+          resolve(data)
         }
       })
     })
