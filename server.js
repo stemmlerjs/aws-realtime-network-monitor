@@ -12,7 +12,7 @@ var app = express();
 app.listen(80)
 
 // Log traffic on HTTP Server to a log file
-//require('./logs')(app)
+require('./logs')(app)
 app.use(morgan('dev'));
 app.use(cors({credentials: true, origin: true})); 
 app.use(helmet())
