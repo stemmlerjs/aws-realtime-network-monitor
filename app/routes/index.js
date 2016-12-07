@@ -268,6 +268,12 @@ module.exports = function(app, express, rootDir, models, CloudWatchClient) {
   // /api/ec2/ - Return all ec2 instances
   // ========================================================================================== //
 
+  ec2ApiRouter.options('/', function(req, res) {
+    res.status(200).json({
+      message: 'good'
+    })
+  })
+
   ec2ApiRouter.get('/', function(req, res) {
     CloudWatchClient.metrics.getEC2Instances()
       .then(function(data) {
@@ -282,6 +288,12 @@ module.exports = function(app, express, rootDir, models, CloudWatchClient) {
   // ========================================================================================== //
   // /api/ec2/:instanceId/metrics - lists all metric (names, dimensions) for a particular EC2 instance
   // ========================================================================================== //
+
+  ec2ApiRouter.options('/:instanceId/metrics', function(req, res) {
+    res.status(200).json({
+      message: 'good'
+    })
+  })
 
   ec2ApiRouter.get('/:instanceId/metrics', function(req, res) {
     var instancedId = req.params["instanceId"]

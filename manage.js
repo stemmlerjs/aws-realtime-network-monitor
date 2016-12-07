@@ -13,6 +13,7 @@
 
         // Hash the password
         bcrypt.hash(password, null, null, function(err, hash) {
+          console.log(hash)
           User.create({
             user_username: username,
             user_password: hash
